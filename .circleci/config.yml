@@ -1,0 +1,27 @@
+version: 2.1
+
+workflows:
+  main:
+    jobs:
+      - flow-deploy-sast:
+
+jobs:
+ flow-deploy-sast: 
+    docker: 
+      - image: "convisoappsec/flowcli"
+    environment:
+      FLOW_PROJECT_CODE: "gx5C48IQHeVv9IF6"
+      FLOW_API_URL: "https://homologa.conviso.com.br"
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: deploy
+          command: flow deploy create -f env_vars with values > created_deploy_vars
+      - run: 
+          name: sast
+          command: |
+            source created_deploy_vars
+            flow sast run \
+            --start-commit "$FLOW_DEPLOY_PREVIOUS_VERSION_COMMIT" \
+            --end-commit "$FLOW_DEPLOY_CURRENT_VERSION_COMMIT"
