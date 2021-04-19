@@ -3,7 +3,7 @@ version: 2.1
 workflows:
   main:
     jobs:
-      - flow-deploy-sast:
+      - flow-deploy-sast
 
 jobs:
  flow-deploy-sast: 
